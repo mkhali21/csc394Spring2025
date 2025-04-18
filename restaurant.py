@@ -1,9 +1,8 @@
 from fastapi import FastAPI, HTTPException
 import openai
 from openai import OpenAI
-from fastapi.middleware.cors import CORSMiddleware
 
-api_key="PUT-YOUR-OPENAI-KEY-HERE"
+api_key="PUT_API_KEY_HERE"
 app = FastAPI()
 
 
@@ -61,7 +60,16 @@ async def get_strings(index: int = 0):
 def build_prompt(user_id):
     user_reviews = reviews[user_id]
     user_reviews_joined = " ".join(user_reviews)
-    return """Give suggestions for chicago
+    prompt = """Give suggestions for chicago
         restaurant given these reviews from a user.
         Give me only the name and address of a single restaurant
         """ + user_reviews_joined
+    print(prompt)
+    # this prints your prompt in your terminal where
+    # you ran uvicorn
+    # for user 4 this generates the following prompt
+    # `Give suggestions for chicago
+    # restaurant given these reviews from a user.
+    # Give me only the name and address of a single restaurant
+    # I hate italian food in general I hated italian food at geordanos`
+    return prompt
