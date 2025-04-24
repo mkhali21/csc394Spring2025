@@ -56,10 +56,11 @@ def get_restaurant(restaurant_id: int):
             raise HTTPException(status_code=404, detail="Restaurant not found")
         return restaurant
 
-@app.delete("/restaurants/{restaurant_id}", response_model=Restaurant)
+
+@app.delete("/restaurants", response_model=Restaurant)
 def delete_restaurant(restaurant_id: int):
     with SessionLocal() as session:
-        restaurant = session.query(RestaurantDB).filter(RestaurantDB.id == restaurant_id)
+        restaurant = session.query(RestaurantDB).filter(RestaurantDB.id == restaurant_id).first()
         if not restaurant:
             raise HTTPException(status_code=404, detail="Restaurant not found")
         session.delete(restaurant)
