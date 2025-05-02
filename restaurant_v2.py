@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 from sqlalchemy import Column, Integer, String, create_engine
@@ -32,14 +33,23 @@ class Restaurant(BaseModel):
 # ---------- FastAPI App ----------
 app = FastAPI()
 
+# Allow requests from your React frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or ["*"] for all origins (less secure)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # ---------- Routes ----------
-@app.get("/restaurants/", response_model=List[Restaurant])
+@app.get("/restaurants", response_model=List[Restaurant])
 def read_restaurants():
     with SessionLocal() as session:
         restaurants = session.query(RestaurantDB).all()
         return restaurants
 
-@app.post("/restaurants/", response_model=Restaurant)
+@app.post("/restaurants", response_model=Restaurant)
 def create_restaurant(restaurant: Restaurant):
     with SessionLocal() as session:
         db_restaurant = RestaurantDB(**restaurant.dict())
